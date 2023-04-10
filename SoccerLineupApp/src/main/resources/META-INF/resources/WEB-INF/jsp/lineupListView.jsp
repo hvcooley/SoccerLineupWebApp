@@ -4,6 +4,7 @@
 <!-- Reccomendation for bootstrap is to put everything in class container -->
 <div class="container">
 	<h1>Your Lineup Is:</h1>
+	<a href = "lineup-pitch-view" class="btn btn-success">View Lineup in Pitch Mode</a>
 	<table class="table"> 
 		<thead>
 			<tr>

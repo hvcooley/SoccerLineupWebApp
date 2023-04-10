@@ -39,6 +39,17 @@ public class LineupController {
 		return "lineupListView";
 	}
 	
+	@RequestMapping("lineup-pitch-view")
+	public String showPitchView(ModelMap model) {
+		//change this to like getLineup
+		List<Player> lineup = lineupService.findByUserName("Cooley");
+		
+		//model.put("todos", todos);
+		model.addAttribute("lineup", lineup);
+		
+		return "lineupPitchView";
+	}
+	
 	//Two way binding. Form is bound to bean and vice versa
 	@RequestMapping(value = "add-player", method = RequestMethod.GET)
 	public String showNewTodoPage(ModelMap model) {
