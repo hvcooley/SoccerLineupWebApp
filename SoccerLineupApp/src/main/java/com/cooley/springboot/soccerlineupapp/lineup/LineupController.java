@@ -3,6 +3,8 @@ package com.cooley.springboot.soccerlineupapp.lineup;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -31,7 +33,7 @@ public class LineupController {
 	public String listLineup(ModelMap model) {
 		
 		//change this to like getLineup
-		List<Player> lineup = lineupService.findByUserName("Cooley");
+		List<Player> lineup = lineupService.getPlayersFromLineupByUsername(getCurrentUser());
 		
 		//model.put("todos", todos);
 		model.addAttribute("lineup", lineup);
@@ -42,7 +44,7 @@ public class LineupController {
 	@RequestMapping("lineup-pitch-view")
 	public String showPitchView(ModelMap model) {
 		//change this to like getLineup
-		List<Player> lineup = lineupService.findByUserName("Cooley");
+		List<Player> lineup = lineupService.getPlayersFromLineupByUsername(getCurrentUser());
 		
 		//model.put("todos", todos);
 		model.addAttribute("lineup", lineup);
@@ -68,14 +70,14 @@ public class LineupController {
 			return "addPlayer";
 		}
 		
-		lineupService.addPlayer(player.getName(), player.getPosition(), player.getNumber(), "New York Boys F.C.");
+		lineupService.addPlayer(getCurrentUser(), player.getName(), player.getPosition(), player.getNumber(), "New York Boys F.C.");
 		return "redirect:lineup-list-view";
 	}
 	
 	@RequestMapping("delete-player")
 	public String deletePlayer(@RequestParam int id) {
 		
-		lineupService.deleteById(id);
+		lineupService.deleteById(getCurrentUser(), id);
 		
 		return "redirect:lineup-list-view";
 	}
@@ -84,7 +86,7 @@ public class LineupController {
 	public String showUpdateTodoPage(@RequestParam int id, ModelMap model) {
 		
 		
-		Player player = lineupService.findById(id);
+		Player player = lineupService.findById(getCurrentUser(), id);
 		model.addAttribute("player", player);
 		
 		return "addPlayer";
@@ -97,9 +99,15 @@ public class LineupController {
 			return "addPlayer";
 		}
 		
-		lineupService.updatePlayer(player.getId(), player.getName(), player.getPosition(), player.getNumber(), player.getTeam());
+		lineupService.updatePlayer(getCurrentUser(), player.getId(), player.getName(), player.getPosition(), player.getNumber(), player.getTeam());
 		
 		return "redirect:lineup-list-view";
+	}
+	
+	//function to get the current user
+	private String getCurrentUser() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		return authentication.getName();
 	}
 	
 }
